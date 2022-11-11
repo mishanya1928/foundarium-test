@@ -14,4 +14,5 @@
 Route::get('/', 'IndexController@index');
 Route::get('/api/free_cars', 'IndexController@free_cars');
 Route::get('/api/link', 'IndexController@link');
+Route::get('/api/clear', 'IndexController@clear');
 Route::get('/api/clear/{id}', 'IndexController@clear');

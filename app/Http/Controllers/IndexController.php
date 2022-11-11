@@ -25,15 +25,18 @@ class IndexController extends Controller
         $uid = $request->input('uid');
         $cid = $request->input('cid');
 
+        if(!$uid || !$cid)
+            return response()->json(['message' => 'request is empty'])->setStatusCode(400);
+
         if(empty($uid) || empty($cid))
-            return response()->json(['message' => 'user ID or car ID is empty'])->setStatusCode(403);
+            return response()->json(['message' => 'user ID or car ID is empty'])->setStatusCode(400);
 
         if(!User::find($uid))
-            return response()->json(['message' => 'user not found'])->setStatusCode(403);
+            return response()->json(['message' => 'user not found'])->setStatusCode(404);
 
         $car = Car::find($cid);
         if(!$car)
-            return response()->json(['message' => 'car not found'])->setStatusCode(403);
+            return response()->json(['message' => 'car not found'])->setStatusCode(404);
 
         if($car->user_id)
             return response()->json(['message' => 'car is busy'])->setStatusCode(403);
@@ -41,15 +44,25 @@ class IndexController extends Controller
         $car->user_id = $uid;
         if($car->save())
             return response()->json(['status' => 'success'])->setStatusCode(200);
-
+        else
+            return response()->json(['status' => 'fail'])->setStatusCode(500);
     }
 
 
-    public function clear( $id ){
+    public function clear($id = NULL){
+
+        if(!$id)
+            return response()->json(['message' => 'request is empty'])->setStatusCode(400);
+
         $car = Car::find($id);
+        if(!$car)
+            return response()->json(['message' => 'car not found'])->setStatusCode(404);
+
         $car->user_id = NULL;
         if($car->save())
             return response()->json(['status' => 'success'])->setStatusCode(200);
+        else
+            return response()->json(['status' => 'fail'])->setStatusCode(500);
     }
 
 }
